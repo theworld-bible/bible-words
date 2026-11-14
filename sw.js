@@ -1,11 +1,12 @@
-const CACHE = 'bible-words-v1';
+const CACHE = 'bible-words-v2';
 const ASSETS = [
   './',
   './index.html',
   './manifest.webmanifest',
   './icon-192.png',
   './icon-512.png',
-  './icon-512-maskable.png'
+  './icon-512-maskable.png',
+  './stripe-implementation/premium.js'
 ];
 
 self.addEventListener('install', (event) => {

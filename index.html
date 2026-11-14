@@ -223,6 +223,39 @@
       .no{ color:var(--muted-2); }
       .price-big{ font-family:var(--serif); font-size:3rem; font-weight:700; color:var(--cream); line-height:1; }
       .price-big small{ font-size:1.1rem; color:var(--muted); font-weight:500; }
+      .manage-row{ display:none; margin-top:.9rem; }
+      .manage-row.show{ display:block; }
+
+      /* ---------- premium features ---------- */
+      .lockline{ color:var(--muted); font-size:1rem; margin:.4rem 0 0; }
+      .linklike{ background:none; border:none; color:var(--gold-2); text-decoration:underline; font:inherit; padding:0; min-height:0; cursor:pointer; }
+      .xday-locked{ opacity:.55; }
+      .style-grid{ display:grid; grid-template-columns:repeat(auto-fill,minmax(128px,1fr)); gap:.6rem; margin:1rem 0; }
+      .style-chip{ border:1px solid var(--gold-dim); border-radius:10px; padding:.5rem; background:#0a132c; color:var(--ink); text-align:left; width:100%; }
+      .style-chip .sw{ display:block; height:44px; border-radius:6px; margin-bottom:.45rem; border:1px solid rgba(255,255,255,.15); }
+      .style-chip .sname{ font-family:var(--sans); font-size:.82rem; font-weight:700; }
+      .style-chip[aria-pressed="true"]{ border-color:var(--gold); background:rgba(201,162,75,.12); }
+      .cal-head{ display:flex; align-items:center; justify-content:space-between; gap:.6rem; margin-bottom:.8rem; flex-wrap:wrap; }
+      .cal-title{ font-family:var(--serif); font-size:1.3rem; color:var(--cream); }
+      .cal-grid{ display:grid; grid-template-columns:repeat(7,1fr); gap:.35rem; }
+      .cal-dow{ font-family:var(--sans); font-size:.65rem; letter-spacing:.14em; text-align:center; color:var(--muted-2); text-transform:uppercase; padding:.2rem 0; }
+      .cal-day{ border:1px solid rgba(201,162,75,.16); border-radius:8px; min-height:4.2rem; padding:.35rem .4rem; background:rgba(255,255,255,.02); text-align:left; color:var(--ink); font-family:var(--sans); width:100%; }
+      .cal-day .dnum{ font-weight:700; font-size:.85rem; color:var(--cream); }
+      .cal-day .dref{ display:block; font-size:.62rem; line-height:1.25; color:var(--muted); margin-top:.15rem; }
+      .cal-day .dmark{ color:var(--gold-2); font-size:.7rem; }
+      .cal-day.today{ border-color:var(--gold); background:rgba(201,162,75,.12); }
+      .cal-day.other{ opacity:.35; }
+      .cal-day.selected{ outline:2px solid var(--gold); outline-offset:1px; }
+      @media (max-width:640px){ .cal-day{ min-height:3.3rem; } .cal-day .dref{ display:none; } }
+      @media print{
+        .topbar, footer, .toast, #view-lessons > *:not(#cal-host), #cal-print-btn, #cal-prev, #cal-next{ display:none !important; }
+        body{ background:#fff; }
+        #cal-card{ box-shadow:none; background:#fff; border-color:#999; color:#111; }
+        #cal-card h3, #cal-card .cal-title{ color:#111; }
+        .cal-day{ background:#fff; border-color:#bbb; color:#111; }
+        .cal-day .dnum{ color:#111; } .cal-day .dref{ color:#444; }
+        #cal-detail .verse-text{ color:#111; } #cal-detail .verse-ref{ color:#555; }
+      }
 
       footer{ max-width:1020px; margin:0 auto; padding:0 1rem 2.5rem; color:var(--muted-2); font-family:var(--sans); font-size:.8rem; text-align:center; line-height:1.7; }
       .hidden{ display:none !important; }
@@ -389,6 +422,7 @@
             <button type="button" class="chip" data-topic="forgiveness">I need forgiveness</button>
             <button type="button" class="chip" data-topic="hope">I need hope</button>
           </div>
+          <p class="fineprint" id="companion-memory-note" style="margin-top:.9rem"></p>
         </div>
       </section>
 
@@ -419,6 +453,16 @@
         <h1>Five days, one theme.</h1>
         <p class="lede">Short reading plans built from the year's 365 words. Read one verse a day; mark it kept when it has had its moment with you.</p>
         <div id="plans-list" class="mt"></div>
+
+        <div class="rule"><span>✦</span></div>
+        <h2>Extended plans</h2>
+        <p class="lede">Longer journeys through the words — twenty-one days, and forty. <span style="color:var(--gold-2)">Premium ✦</span></p>
+        <div id="xplans-list" class="mt"></div>
+
+        <div class="rule"><span>✦</span></div>
+        <h2>Monthly word calendar</h2>
+        <p class="lede">Every day of the month with its word — the days you have received the word are marked, and the month is yours to print. <span style="color:var(--gold-2)">Premium ✦</span></p>
+        <div id="cal-host" class="mt"></div>
       </section>
 
       <!-- ================= PREMIUM ================= -->
@@ -430,12 +474,19 @@
         <div class="grid cols-2 mt">
           <div class="card center">
             <p class="kicker">Premium</p>
-            <div class="price-big">$9.99<small> / month</small></div>
-            <p style="color:var(--muted)">Launching soon. Reserve your place now — no payment is taken today.</p>
+            <div class="price-big">$231<small> / month</small></div>
+            <p style="color:var(--muted)">Subscribe securely through Stripe. The verses themselves are always free — Premium only adds depth around them.</p>
             <div class="btn-row" style="justify-content:center">
-              <button type="button" class="btn" id="btn-reserve">Reserve / Notify me</button>
+              <button type="button" class="btn" id="btn-reserve">Subscribe to Premium — $231/month</button>
             </div>
-            <p class="fineprint mt" id="reserve-note">Your interest is recorded on this device only. We will never ask for card details here.</p>
+            <div class="manage-row" id="manage-row">
+              <button type="button" class="btn ghost small" id="btn-manage-subscription">Manage subscription</button>
+            </div>
+            <div class="btn-row hidden" id="premium-perks" style="justify-content:center">
+              <button type="button" class="btn ghost small" data-nav="lessons">Extended plans &amp; calendar</button>
+              <button type="button" class="btn ghost small" data-nav="companion">Companion — with memory</button>
+            </div>
+            <p class="fineprint mt" id="reserve-note">Payment is handled by Stripe on its own secure page — we never see or store your card details. Cancel anytime from “Manage subscription”.</p>
           </div>
           <div class="card">
             <h3>Free vs Premium</h3>
@@ -557,14 +608,30 @@
         <div class="ob-step" data-step="6">
           <p class="kicker">Step 6 · One last thing</p>
           <h2 class="ob-big" style="font-size:clamp(1.7rem,5vw,2.4rem)">Go deeper, when you're ready.</h2>
-          <p class="lede">Premium ($9.99/month, coming soon) adds extended reading plans, every wallpaper style, and a companion that remembers. But hear this clearly:</p>
+          <p class="lede">Premium ($231/month) adds extended reading plans, every wallpaper style, and a companion that remembers. But hear this clearly:</p>
           <div class="done-banner">✦ &nbsp;All 365 words are free to read — today, every day, forever. Premium never stands between you and the words.</div>
           <div class="btn-row">
             <button type="button" class="btn ghost" data-ob-back>Back</button>
-            <button type="button" class="btn" id="ob-reserve">Reserve Premium — notify me</button>
+            <button type="button" class="btn" id="ob-reserve">Subscribe to Premium — $231/month</button>
             <button type="button" class="btn ghost" id="ob-finish">Continue free</button>
           </div>
-          <p class="fineprint">No payment is taken. Reserving only records your interest on this device.</p>
+          <p class="fineprint">Subscribing takes you to Stripe’s secure checkout. Continuing free costs nothing — the words are yours either way.</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- ================= WALLPAPER STUDIO ================= -->
+    <div class="overlay" id="wall-panel" role="dialog" aria-modal="true" aria-label="Wallpaper styles">
+      <div class="ob-wrap">
+        <p class="kicker">Lock-screen wallpaper</p>
+        <h2 class="ob-big" style="font-size:clamp(1.6rem,5vw,2.2rem)">Choose a style.</h2>
+        <p class="lede">For <span class="verse-ref" id="wall-panel-ref" style="font-size:1rem"></span> — the Classic style is free forever. The full set of styles &amp; colours is Premium ✦.</p>
+        <div class="style-grid" id="wall-style-grid"></div>
+        <p class="fineprint" id="wall-lock-note"></p>
+        <div class="btn-row">
+          <button type="button" class="btn" id="wall-download">Download wallpaper (1080 × 1920)</button>
+          <button type="button" class="btn ghost" id="wall-see-premium">See Premium ✦</button>
+          <button type="button" class="btn ghost" id="wall-close">Close</button>
         </div>
       </div>
     </div>
@@ -964,6 +1031,7 @@
       var gate = load("bw_gate", { lastDate:"", streak:0, line:"" });
       var premiumReserved = load("bw_premium", false);
       var lessonProgress = load("bw_lessons", {});
+      var visits = load("bw_visits", {}); /* dateKey -> true, days the word was received here */
 
       /* ---------- dates ---------- */
       function dayOfYear(d){
@@ -1136,7 +1204,8 @@
           else b.removeAttribute("aria-current");
         });
         window.scrollTo(0,0);
-        if (name === "companion") ensureGreeting();
+        if (name === "companion"){ renderCompanionNote(); ensureGreeting(); }
+        if (name === "lessons"){ renderExtendedPlans(); renderCalendar(); }
       }
       document.addEventListener("click", function(e){
         var t = e.target.closest("[data-nav]");
@@ -1215,18 +1284,31 @@
         if (chatStarted) return; chatStarted = true;
         var intro = "Peace to you. I am your Verse Companion — tell me what you are carrying, in your own words, and I will answer from the 365 words.";
         if (profile.concern) intro += " Last time, you said you were carrying: \u201C" + profile.concern + "\u201D — is it still that, or something new?";
+        /* Premium memory (on-device only): greet by the remembered
+           name and recall what has been carried in past days. */
+        if (premiumActiveHere()){
+          if (companionMemory.name) intro = intro.replace("Peace to you.", "Peace to you, " + companionMemory.name + ".");
+          if (companionMemory.entries.length){
+            var recent = companionMemory.entries.slice(-3).map(function(e){ return e.t + " (" + prettyKey(e.d) + ")"; }).join(", ");
+            intro += " Since we last spoke, you have carried: " + recent + ".";
+          }
+        }
         addMsg("bot", verseMsgHTML(todayVerse, tagsOf(todayVerse)[0], intro + " Here is today's word while you gather your thoughts:"));
       }
       function companionAnswer(text, silentUser){
         if (!silentUser) addMsg("user", esc(text));
         pickSalt += 3;
         var m = matchVerse(text, pickSalt + text.length);
+        /* Premium memory: record this turn (name + topics) on-device,
+           then let the reply recall an earlier day when the same
+           burden was brought before. Free users: nothing is recorded. */
+        if (!silentUser) recordCompanionTurn(text);
         var intros = [
           "For this, hear the word of the Lord:",
           "This word was kept for a heart carrying exactly that:",
           "Take this one slowly, and let it settle:"
         ];
-        var intro = intros[pickSalt % intros.length];
+        var intro = memoryRecallFor(text) + intros[pickSalt % intros.length];
         setTimeout(function(){ addMsg("bot", verseMsgHTML(m.verse, m.topic, intro)); }, 220);
       }
       $("#chat-form").addEventListener("submit", function(e){
@@ -1332,82 +1414,480 @@
         if (line) lines.push(line);
         return lines;
       }
-      function drawWallpaper(canvas, verse){
+      function drawWallpaper(canvas, verse, styleId){
+        var p = wallStyleById(styleId || selectedWallStyle().id);
         var W = canvas.width, H = canvas.height, S = W/1080;
         var ctx = canvas.getContext("2d");
         var g = ctx.createLinearGradient(0,0,0,H);
-        g.addColorStop(0,"#0d1734"); g.addColorStop(.5,"#132046"); g.addColorStop(1,"#080f22");
+        g.addColorStop(0,p.bg[0]); g.addColorStop(.5,p.bg[1]); g.addColorStop(1,p.bg[2]);
         ctx.fillStyle = g; ctx.fillRect(0,0,W,H);
-        /* soft gold glow at top */
+        /* soft glow at top */
         var rg = ctx.createRadialGradient(W/2, H*0.16, 10, W/2, H*0.16, W*0.75);
-        rg.addColorStop(0,"rgba(232,200,119,0.20)"); rg.addColorStop(1,"rgba(232,200,119,0)");
+        rg.addColorStop(0,p.glow); rg.addColorStop(1,"rgba(0,0,0,0)");
         ctx.fillStyle = rg; ctx.fillRect(0,0,W,H);
+        if (p.stars){
+          /* quiet stars for the Midnight Silver style (deterministic) */
+          ctx.fillStyle = "rgba(230,238,255,0.75)";
+          for (var si=0; si<80; si++){
+            var sx2 = ((si*379 + 41) % 100) / 100 * W;
+            var sy2 = ((si*733 + 17) % 100) / 100 * H;
+            var sr = (si % 3 === 0) ? 2.2*S : 1.2*S;
+            ctx.beginPath(); ctx.arc(sx2, sy2, sr, 0, 6.2832); ctx.fill();
+          }
+        }
         /* double frame */
-        ctx.strokeStyle = "rgba(201,162,75,0.85)"; ctx.lineWidth = 3*S;
+        ctx.strokeStyle = p.frame; ctx.lineWidth = 3*S;
         ctx.strokeRect(48*S, 48*S, W-96*S, H-96*S);
-        ctx.strokeStyle = "rgba(201,162,75,0.35)"; ctx.lineWidth = 1.5*S;
+        ctx.strokeStyle = p.frame2; ctx.lineWidth = 1.5*S;
         ctx.strokeRect(70*S, 70*S, W-140*S, H-140*S);
         ctx.textAlign = "center";
         /* header */
-        ctx.fillStyle = "#e8c877";
+        ctx.fillStyle = p.head;
         ctx.font = "600 " + Math.round(92*S) + "px Georgia, serif";
         ctx.fillText("✝", W/2, 250*S);
         ctx.font = "600 " + Math.round(40*S) + "px Georgia, serif";
-        ctx.fillStyle = "#c9a24b";
+        ctx.fillStyle = p.sub;
         ctx.fillText("B I B L E   W O R D S", W/2, 330*S);
         /* verse */
         var fs = verse[1].length > 220 ? 56 : (verse[1].length > 130 ? 64 : 74);
         ctx.font = "500 " + Math.round(fs*S) + "px 'EB Garamond', Georgia, serif";
-        ctx.fillStyle = "#f3ead3";
+        ctx.fillStyle = p.text;
         var lines = wrapText(ctx, "\u201C" + verse[1] + "\u201D", W - 260*S);
         var lh = fs*1.42*S, total = lines.length*lh;
         var y = H*0.5 - total/2 + lh*0.75;
         lines.forEach(function(ln){ ctx.fillText(ln, W/2, y); y += lh; });
         /* ornament + reference */
-        ctx.fillStyle = "#c9a24b";
+        ctx.fillStyle = p.sub;
         ctx.font = "400 " + Math.round(44*S) + "px Georgia, serif";
         ctx.fillText("✦  ✦  ✦", W/2, y + 60*S);
         ctx.font = "600 " + Math.round(52*S) + "px 'Cormorant Garamond', Georgia, serif";
-        ctx.fillStyle = "#e8c877";
+        ctx.fillStyle = p.ref;
         ctx.fillText(verse[0].toUpperCase(), W/2, y + 150*S);
         ctx.font = "400 " + Math.round(32*S) + "px Georgia, serif";
-        ctx.fillStyle = "#a7b0c9";
+        ctx.fillStyle = p.meta;
         ctx.fillText("KING JAMES VERSION", W/2, y + 208*S);
         /* footer */
         ctx.font = "400 " + Math.round(30*S) + "px Georgia, serif";
-        ctx.fillStyle = "rgba(167,176,201,0.8)";
+        ctx.fillStyle = p.foot;
         ctx.fillText("A word for every day · by theworld", W/2, H - 120*S);
       }
-      function downloadWallpaper(verse){
+      function downloadWallpaper(verse, styleId){
+        var st = wallStyleById(styleId || selectedWallStyle().id);
         var c = document.createElement("canvas");
         c.width = 1080; c.height = 1920;
-        drawWallpaper(c, verse);
+        drawWallpaper(c, verse, st.id);
         function save(href){
           var a = document.createElement("a");
           a.href = href; a.download = "bible-words-wallpaper.png";
           document.body.appendChild(a); a.click(); document.body.removeChild(a);
         }
-        if (c.toBlob) c.toBlob(function(b){ save(URL.createObjectURL(b)); toast("Wallpaper saved — set it as your lock screen."); }, "image/png");
-        else { save(c.toDataURL("image/png")); toast("Wallpaper saved — set it as your lock screen."); }
+        var doneMsg = "Wallpaper saved (" + st.name + ") — set it as your lock screen.";
+        if (c.toBlob) c.toBlob(function(b){ save(URL.createObjectURL(b)); toast(doneMsg); }, "image/png");
+        else { save(c.toDataURL("image/png")); toast(doneMsg); }
       }
-      $("#btn-wallpaper-today").addEventListener("click", function(){ downloadWallpaper(todayVerse); });
-      $("#btn-wallpaper-short").addEventListener("click", function(){ downloadWallpaper(VERSES[shortIdx]); });
+      /* The wallpaper buttons open the style studio: Classic is free,
+         the rest of the catalogue is Premium (see the studio below). */
+      $("#btn-wallpaper-today").addEventListener("click", function(){ openWallpaperPanel(todayVerse); });
+      $("#btn-wallpaper-short").addEventListener("click", function(){ openWallpaperPanel(VERSES[shortIdx]); });
 
       /* ---------- premium ---------- */
+      /* Stripe wiring lives in stripe-implementation/premium.js
+         (window.BibleWordsPremium). If that script fails to load,
+         the buttons below fall back to the original behaviour:
+         recording interest on this device only (bw_premium). */
+      function bwPremiumApi(){
+        return window.BibleWordsPremium || null;
+      }
+      function premiumActiveHere(){
+        var api = bwPremiumApi();
+        if (api && typeof api.isPremium === "function") return !!api.isPremium();
+        try { return localStorage.getItem("bw_premium_active") === "1"; }
+        catch(e){ return false; }
+      }
       function renderPremium(){
         var note = $("#reserve-note");
         var btn = $("#btn-reserve");
-        if (premiumReserved){
-          note.textContent = "✦ You have reserved your place. We will let you know the moment Premium opens — the words remain free either way.";
-          btn.textContent = "Reserved ✓";
+        var manageRow = $("#manage-row");
+        var perks = $("#premium-perks");
+        if (perks) perks.classList.toggle("hidden", !premiumActiveHere());
+        if (premiumActiveHere()){
+          note.textContent = "✦ Premium is active on this device. Thank you for going deeper — the words remain free for everyone, always.";
+          btn.textContent = "Premium is active ✦";
           btn.setAttribute("disabled","");
+          if (manageRow) manageRow.classList.add("show");
+          return;
+        }
+        if (manageRow) manageRow.classList.remove("show");
+        if (premiumReserved){
+          note.textContent = "✦ You showed interest in Premium earlier — it is open now, if you would like to go deeper. The words remain free either way.";
+          btn.textContent = "Subscribe to Premium — $231/month";
+          btn.removeAttribute("disabled");
         }
       }
-      $("#btn-reserve").addEventListener("click", function(){
+      function startPremiumCheckout(){
+        var api = bwPremiumApi();
+        if (api && typeof api.startCheckout === "function"){
+          /* The Payment Link is configured, so this navigates to
+             Stripe's hosted checkout (or fires the
+             bw:checkout-not-configured event handled below). */
+          api.startCheckout();
+          return true;
+        }
+        return false;
+      }
+      document.addEventListener("bw:checkout-not-configured", function(){
+        /* premium.js loaded but no payment route is available:
+           keep the old reserve behaviour rather than a dead end. */
         premiumReserved = true; save("bw_premium", true);
         renderPremium();
-        toast("Reserved. No payment taken — we will notify you at launch.");
+        toast("Premium checkout is not available just now — your interest is recorded on this device.");
       });
+      document.addEventListener("bw:premium-activated", function(){
+        renderPremium();
+        toast("Welcome to Premium ✦ It is active on this device.");
+      });
+      $("#btn-reserve").addEventListener("click", function(){
+        if (startPremiumCheckout()) return;
+        /* Fallback (premium.js failed to load): reserve only. */
+        premiumReserved = true; save("bw_premium", true);
+        renderPremium();
+        toast("Reserved on this device — checkout could not be opened, and no payment was taken.");
+      });
+      var manageBtn = $("#btn-manage-subscription");
+      if (manageBtn){
+        manageBtn.addEventListener("click", function(){
+          var api = bwPremiumApi();
+          if (api && typeof api.openPortal === "function"){ api.openPortal(); return; }
+          toast("Subscription management is unavailable just now.");
+        });
+      }
+
+      /* ================================================================
+         PREMIUM FEATURES (implemented 2026-11-14, local only)
+         Gate: premiumActiveHere() — window.BibleWordsPremium.isPremium().
+         The split follows the app's own comparison table exactly:
+           Free    — 365 words, Morning Gate, Companion, Shorts,
+                     wallpaper in the Classic style, 5-day plans.
+           Premium — extended plans (21 & 40 days), all wallpaper
+                     styles & colours, Companion memory across days,
+                     printable monthly word calendars.
+         The verses themselves are NEVER gated: today's word, the
+         Shorts, the Companion's answers and every verse shown inside
+         a plan or a calendar day remain free to read for everyone.
+         ================================================================ */
+
+      /* ---------- shared lock note (routes to the Premium screen) ---------- */
+      function lockNoteHTML(what){
+        return '<p class="lockline">🔒 ' + what + ' is a Premium feature. <button type="button" class="linklike" data-goto-premium>See Premium ✦</button></p>';
+      }
+      document.addEventListener("click", function(e){
+        var t = e.target.closest("[data-goto-premium]");
+        if (t) showView("premium");
+      });
+      function refreshPremiumFeatures(){
+        renderExtendedPlans(); renderCalendar(); renderCompanionNote();
+        if (wallPanelOpen) renderWallStyles();
+      }
+      document.addEventListener("bw:premium-activated", refreshPremiumFeatures);
+
+      /* ---------- wallpaper styles ----------
+         Classic is the style free users have always had; it stays free.
+         The rest of the catalogue is Premium. Nothing free was removed. */
+      var WALL_STYLES = [
+        { id:"classic",  name:"Classic Navy",    premium:false,
+          bg:["#0d1734","#132046","#080f22"], glow:"rgba(232,200,119,0.20)",
+          frame:"rgba(201,162,75,0.85)", frame2:"rgba(201,162,75,0.35)",
+          head:"#e8c877", sub:"#c9a24b", text:"#f3ead3", ref:"#e8c877",
+          meta:"#a7b0c9", foot:"rgba(167,176,201,0.8)", stars:false },
+        { id:"dawn",     name:"Dawn Rose",       premium:true,
+          bg:["#2a1030","#57203f","#1a0b24"], glow:"rgba(255,166,120,0.28)",
+          frame:"rgba(240,180,130,0.9)", frame2:"rgba(240,180,130,0.4)",
+          head:"#ffd9a8", sub:"#f0a884", text:"#fdf3e3", ref:"#ffd9a8",
+          meta:"#e8b4a0", foot:"rgba(230,190,180,0.85)", stars:false },
+        { id:"parchment", name:"Parchment",      premium:true,
+          bg:["#f6ecd2","#efdfba","#e7d09e"], glow:"rgba(201,162,75,0.25)",
+          frame:"rgba(122,90,28,0.9)", frame2:"rgba(122,90,28,0.45)",
+          head:"#7a5a1c", sub:"#8a6a24", text:"#2a2118", ref:"#7a5a1c",
+          meta:"#6b5322", foot:"rgba(90,70,35,0.85)", stars:false },
+        { id:"midnight", name:"Midnight Silver", premium:true,
+          bg:["#05070f","#0b1020","#03040a"], glow:"rgba(180,200,255,0.16)",
+          frame:"rgba(190,205,235,0.85)", frame2:"rgba(190,205,235,0.35)",
+          head:"#dfe8ff", sub:"#aebfe8", text:"#eef2ff", ref:"#dfe8ff",
+          meta:"#93a7d4", foot:"rgba(160,175,210,0.8)", stars:true },
+        { id:"olive",    name:"Olive & Gold",    premium:true,
+          bg:["#14260f","#22391a","#0a1708"], glow:"rgba(220,190,90,0.20)",
+          frame:"rgba(201,162,75,0.9)", frame2:"rgba(201,162,75,0.4)",
+          head:"#e8c877", sub:"#b9c48a", text:"#f3eed8", ref:"#e8c877",
+          meta:"#a9b87e", foot:"rgba(185,196,138,0.85)", stars:false }
+      ];
+      function wallStyleById(id){
+        for (var i=0;i<WALL_STYLES.length;i++){ if (WALL_STYLES[i].id === id) return WALL_STYLES[i]; }
+        return WALL_STYLES[0];
+      }
+      function selectedWallStyle(){
+        var st = wallStyleById(load("bw_wall_style", "classic"));
+        if (st.premium && !premiumActiveHere()) return WALL_STYLES[0]; /* Classic */
+        return st;
+      }
+
+      /* ---------- wallpaper studio (style picker panel) ---------- */
+      var wallPanelVerse = null, wallPanelOpen = false, wallSelected = "classic";
+      function openWallpaperPanel(verse){
+        wallPanelVerse = verse;
+        wallSelected = selectedWallStyle().id;
+        wallPanelOpen = true;
+        $("#wall-panel-ref").textContent = verse[0] + " · KJV";
+        renderWallStyles();
+        $("#wall-panel").classList.add("open");
+        document.body.style.overflow = "hidden";
+      }
+      function closeWallpaperPanel(){
+        wallPanelOpen = false;
+        $("#wall-panel").classList.remove("open");
+        document.body.style.overflow = "";
+      }
+      function renderWallStyles(){
+        var host = $("#wall-style-grid"); if (!host) return;
+        var prem = premiumActiveHere();
+        host.innerHTML = WALL_STYLES.map(function(st){
+          var locked = st.premium && !prem;
+          return '<button type="button" class="style-chip" data-style="' + st.id + '" aria-pressed="' + (wallSelected === st.id) + '">' +
+            '<span class="sw" style="background:linear-gradient(160deg,' + st.bg[0] + "," + st.bg[1] + "," + st.bg[2] + ')"></span>' +
+            '<span class="sname">' + st.name + "</span>" +
+            (st.premium
+              ? ' <span style="color:var(--gold-2); font-size:.72rem">✦ PREMIUM</span>' + (locked ? '<span style="display:block; font-size:.75rem; color:var(--muted)">🔒 Premium</span>' : "")
+              : ' <span style="font-size:.72rem; color:var(--muted)">FREE</span>') +
+            "</button>";
+        }).join("");
+        $("#wall-lock-note").innerHTML = prem
+          ? "Every style &amp; colour is yours. ✦"
+          : 'The full set of styles &amp; colours is Premium. <button type="button" class="linklike" data-goto-premium>See Premium ✦</button>';
+        var sp = $("#wall-see-premium");
+        if (sp) sp.classList.toggle("hidden", prem);
+      }
+      $("#wall-style-grid").addEventListener("click", function(e){
+        var chip = e.target.closest("[data-style]"); if (!chip) return;
+        var st = wallStyleById(chip.getAttribute("data-style"));
+        if (st.premium && !premiumActiveHere()){
+          toast("That style is Premium ✦ — see Premium to unlock every style & colour.");
+          return;
+        }
+        wallSelected = st.id;
+        save("bw_wall_style", st.id);
+        renderWallStyles();
+      });
+      $("#wall-download").addEventListener("click", function(){
+        if (!wallPanelVerse) return;
+        downloadWallpaper(wallPanelVerse, wallSelected);
+        closeWallpaperPanel();
+      });
+      $("#wall-close").addEventListener("click", closeWallpaperPanel);
+      $("#wall-see-premium").addEventListener("click", function(){
+        closeWallpaperPanel();
+        showView("premium");
+      });
+
+      /* ---------- extended plans (Premium: 21 & 40 days) ----------
+         Progress model: SEQUENTIAL. Day 1 is open; each following day
+         opens when the day before it is marked kept. Un-keeping a day
+         also un-keeps the days after it, so the road stays in order.
+         Progress lives in localStorage (bw_xplans) on this device. */
+      var XPLANS = [
+        { id:"walk21", days:21, title:"Twenty-One Days of Peace",
+          desc:"Three unhurried weeks for a heart that worries — peace practised daily until it begins to feel like home.",
+          tags:["peace","anxiety","trust","rest","hope","patience","comfort"] },
+        { id:"road40", days:40, title:"Forty Days on the Long Road",
+          desc:"A forty-day journey through faith, guidance, courage, gratitude and mercy — the long way, walked one lit step at a time.",
+          tags:["faith","guidance","strength","gratitude","hope","courage","wisdom","mercy","perseverance","love"] }
+      ];
+      var xplanProgress = load("bw_xplans", {});
+      function xplanDays(plan){
+        var used = {}, days = [];
+        for (var d=0; d<plan.days; d++){
+          var tag = plan.tags[d % plan.tags.length];
+          var cands = versesWithTag(tag);
+          var start = (d*7 + plan.days) % cands.length, chosen = null;
+          for (var k=0;k<cands.length;k++){
+            var c = cands[(start+k) % cands.length];
+            if (!used[c[0]]){ chosen = c; break; }
+          }
+          if (!chosen) chosen = cands[start];
+          used[chosen[0]] = true;
+          days.push({ tag: tag, verse: chosen });
+        }
+        return days;
+      }
+      function renderExtendedPlans(){
+        var host = $("#xplans-list"); if (!host) return;
+        host.innerHTML = "";
+        var prem = premiumActiveHere();
+        XPLANS.forEach(function(plan){
+          var card = document.createElement("div");
+          card.className = "card plan-card mb";
+          if (!prem){
+            card.innerHTML = "<h3>" + plan.title + '</h3><p class="days">' + plan.days + " days · Premium ✦</p>" +
+              '<p style="color:var(--muted); margin:.2rem 0 .4rem">' + plan.desc + "</p>" +
+              lockNoteHTML("Extended plans");
+            host.appendChild(card);
+            return;
+          }
+          var prog = xplanProgress[plan.id] || { started:"", done:{} };
+          var doneCount = 0;
+          for (var dk in prog.done){ if (prog.done[dk]) doneCount++; }
+          var daysHTML = xplanDays(plan).map(function(d, di){
+            var done = !!prog.done[di];
+            var unlocked = di === 0 || !!prog.done[di-1];
+            if (!unlocked){
+              return '<div class="lesson-day xday-locked"><div class="d-head"><span class="d-num">Day ' + (di+1) + "</span></div><p>🔒 Opens when Day " + di + " is kept.</p></div>";
+            }
+            return '<div class="lesson-day"><div class="d-head"><span class="d-num">Day ' + (di+1) + " · " + d.tag + '</span><span class="d-ref">' + d.verse[0] + "</span></div>" +
+              '<p class="verse-mini">\u201C' + esc(d.verse[1]) + "\u201D</p>" +
+              "<p>" + esc(reflectionFor(d.tag)) + "</p>" +
+              '<button type="button" class="checkline' + (done ? " done" : "") + '" data-xplan="' + plan.id + '" data-xday="' + di + '">' + (done ? "✓ Kept" : "Mark as kept") + "</button></div>";
+          }).join("");
+          card.innerHTML = "<h3>" + plan.title + '</h3><p class="days">' + plan.days + " days · " + doneCount + " of " + plan.days + " kept" + (prog.started ? " · began " + prog.started : "") + '</p><p style="color:var(--muted); margin:.2rem 0 .4rem">' + plan.desc + "</p>" + daysHTML;
+          host.appendChild(card);
+        });
+      }
+      $("#xplans-list").addEventListener("click", function(e){
+        var b = e.target.closest("[data-xplan]"); if (!b) return;
+        var pid = b.getAttribute("data-xplan"), di = parseInt(b.getAttribute("data-xday"), 10);
+        var prog = xplanProgress[pid] || { started:"", done:{} };
+        if (!prog.started) prog.started = todayKey;
+        if (prog.done[di]){
+          for (var k in prog.done){ if (parseInt(k,10) >= di) delete prog.done[k]; }
+        } else {
+          prog.done[di] = true;
+        }
+        xplanProgress[pid] = prog;
+        save("bw_xplans", xplanProgress);
+        renderExtendedPlans();
+      });
+
+      /* ---------- monthly word calendar (Premium) ----------
+         The calendar VIEW is the Premium feature. The verses it shows
+         are the same free 365 words: tapping any day simply reads
+         that day's word. ✦ marks days the word was received here
+         (bw_visits, recorded for every user at startup). */
+      var calCursor = { y: now.getFullYear(), m: now.getMonth() };
+      var calSelectedKey = todayKey;
+      function verseForDate(d){ return VERSES[(dayOfYear(d)-1) % VERSES.length]; }
+      function calCellHTML(dt, key, v, other){
+        var cls = "cal-day" + (other ? " other" : "") + (key === todayKey ? " today" : "") + (key === calSelectedKey ? " selected" : "");
+        var mark = visits[key] ? ' <span class="dmark">✦</span>' : "";
+        return '<button type="button" class="' + cls + '" data-cal-day="' + key + '"><span class="dnum">' + dt.getDate() + "</span>" + mark + '<span class="dref">' + esc(v[0]) + "</span></button>";
+      }
+      function renderCalendar(){
+        var host = $("#cal-host"); if (!host) return;
+        if (!premiumActiveHere()){
+          host.innerHTML = '<div class="card"><h3>' + MONTHS[calCursor.m] + " " + calCursor.y + '</h3><p style="color:var(--muted)">A month of words at a glance — every day\u2019s verse, the days you have kept marked, today lit in gold, ready to print.</p>' + lockNoteHTML("The monthly word calendar") + "</div>";
+          return;
+        }
+        var y = calCursor.y, m = calCursor.m;
+        var startDow = new Date(y, m, 1).getDay();
+        var daysInMonth = new Date(y, m+1, 0).getDate();
+        var daysInPrev = new Date(y, m, 0).getDate();
+        var cells = "", i, dnum, dt;
+        for (i=0;i<startDow;i++){
+          dnum = daysInPrev - startDow + 1 + i;
+          dt = new Date(y, m-1, dnum);
+          cells += calCellHTML(dt, dateKey(dt), verseForDate(dt), true);
+        }
+        for (dnum=1; dnum<=daysInMonth; dnum++){
+          dt = new Date(y, m, dnum);
+          cells += calCellHTML(dt, dateKey(dt), verseForDate(dt), false);
+        }
+        var trail = (7 - ((startDow + daysInMonth) % 7)) % 7;
+        for (i=1;i<=trail;i++){
+          dt = new Date(y, m+1, i);
+          cells += calCellHTML(dt, dateKey(dt), verseForDate(dt), true);
+        }
+        var dows = ["Sun","Mon","Tue","Wed","Thu","Fri","Sat"].map(function(d){ return '<div class="cal-dow">' + d + "</div>"; }).join("");
+        host.innerHTML = '<div class="card" id="cal-card">' +
+          '<div class="cal-head"><button type="button" class="btn ghost small" id="cal-prev">← Prev</button>' +
+          '<span class="cal-title">' + MONTHS[m] + " " + y + "</span>" +
+          '<span><button type="button" class="btn ghost small" id="cal-print-btn">Print</button> <button type="button" class="btn ghost small" id="cal-next">Next →</button></span></div>' +
+          '<div class="cal-grid">' + dows + cells + "</div>" +
+          '<p class="fineprint" style="margin-top:.7rem">✦ marks a day you received the word here. Tap any day to read its word — the words themselves are always free.</p>' +
+          '<div id="cal-detail"></div></div>';
+        renderCalDetail();
+        $("#cal-prev").addEventListener("click", function(){ calCursor.m--; if (calCursor.m < 0){ calCursor.m = 11; calCursor.y--; } renderCalendar(); });
+        $("#cal-next").addEventListener("click", function(){ calCursor.m++; if (calCursor.m > 11){ calCursor.m = 0; calCursor.y++; } renderCalendar(); });
+        $("#cal-print-btn").addEventListener("click", function(){ window.print(); });
+      }
+      function renderCalDetail(){
+        var host = $("#cal-detail"); if (!host) return;
+        var parts = calSelectedKey.split("-");
+        var dt = new Date(parseInt(parts[0],10), parseInt(parts[1],10)-1, parseInt(parts[2],10));
+        var v = verseForDate(dt);
+        host.innerHTML = '<div class="rule"><span>✦</span></div><p class="kicker">' + DAYS[dt.getDay()] + " · " + MONTHS[dt.getMonth()] + " " + dt.getDate() + ", " + dt.getFullYear() + "</p>" +
+          '<p class="verse-text" style="font-size:1.25rem; text-align:left; margin:.3rem 0">\u201C' + esc(v[1]) + "\u201D</p>" +
+          '<div class="verse-ref" style="text-align:left">' + esc(v[0]) + " · KJV</div>";
+      }
+      $("#cal-host").addEventListener("click", function(e){
+        var b = e.target.closest("[data-cal-day]"); if (!b) return;
+        calSelectedKey = b.getAttribute("data-cal-day");
+        renderCalendar();
+      });
+
+      /* ---------- companion memory (Premium, on-device only) ----------
+         Honest note: this memory lives ONLY in this browser's
+         localStorage (bw_companion_memory). There is no account and
+         no server; nothing the user says is sent anywhere. It keeps:
+           · a name, when the user shares one ("my name is …"),
+           · the topics they keep bringing (counts per topic),
+           · a short rolling list of recent conversations
+             (date + topic, most recent last, capped at 24).
+         …and it uses them: greetings speak the name, and a reply
+         recalls the earlier day when the same burden was brought.
+         Free users' chat stays session-only, exactly as before —
+         recordCompanionTurn() is a no-op without Premium. */
+      var companionMemory = load("bw_companion_memory", { name:"", concerns:{}, entries:[], turns:0 });
+      function prettyKey(key){
+        var p = String(key).split("-");
+        return MONTHS[parseInt(p[1],10)-1] + " " + parseInt(p[2],10);
+      }
+      function recordCompanionTurn(text){
+        if (!premiumActiveHere()) return;
+        var lead = String(text || "").match(/(?:my name is|call me)\s+(.+)/i);
+        if (lead){
+          /* first word always; a second word only if it is capitalised
+             (a surname) — never swallow "and I feel …" into the name */
+          var nm = lead[1].match(/^([A-Za-z][A-Za-z'-]{1,24})(?:\s+([A-Z][A-Za-z'-]{1,24}))?/);
+          if (nm) companionMemory.name = (nm[1] + (nm[2] ? " " + nm[2] : "")).trim();
+        }
+        var topics = detectTopics(text);
+        if (topics.length){
+          var t = topics[0];
+          companionMemory.concerns[t] = (companionMemory.concerns[t] || 0) + 1;
+          var last = companionMemory.entries[companionMemory.entries.length-1];
+          if (!last || last.t !== t || last.d !== todayKey) companionMemory.entries.push({ d: todayKey, t: t });
+          if (companionMemory.entries.length > 24) companionMemory.entries = companionMemory.entries.slice(-24);
+        }
+        companionMemory.turns++;
+        save("bw_companion_memory", companionMemory);
+      }
+      function memoryRecallFor(text){
+        if (!premiumActiveHere() || !companionMemory.entries.length) return "";
+        var topics = detectTopics(text);
+        for (var i=0;i<topics.length;i++){
+          for (var j=companionMemory.entries.length-1;j>=0;j--){
+            var e = companionMemory.entries[j];
+            if (e.t === topics[i] && e.d !== todayKey){
+              return "You have brought this to me before — on " + prettyKey(e.d) + " you spoke of " + e.t + " too. He has not forgotten, and neither have I. ";
+            }
+          }
+        }
+        return "";
+      }
+      function renderCompanionNote(){
+        var el = $("#companion-memory-note"); if (!el) return;
+        if (premiumActiveHere()){
+          el.textContent = "✦ Premium memory is on: the Companion remembers your name and what you have carried — kept on this device only, never sent anywhere.";
+        } else {
+          el.innerHTML = 'The Companion answers today, but forgets by tomorrow. <button type="button" class="linklike" data-goto-premium>Companion memory across days is Premium ✦</button>';
+        }
+      }
 
       /* ---------- onboarding ---------- */
       var obStep = 1, obVerse = todayVerse;
@@ -1467,6 +1947,14 @@
         toast("Welcome to Bible Words. Day " + Math.max(gate.streak,1) + " of your journey begins.");
       }
       $("#ob-reserve").addEventListener("click", function(){
+        if (startPremiumCheckout()){
+          /* Leaving for Stripe checkout. The onboarding is not
+             finished here — after payment Stripe returns to
+             ?premium=welcome, which premium.js turns into
+             Premium-active on this device. */
+          return;
+        }
+        /* Fallback (premium.js failed to load): reserve only. */
         premiumReserved = true; save("bw_premium", true); renderPremium();
         finishOnboarding();
       });
@@ -1479,10 +1967,18 @@
           if (c.getAttribute("data-trad") === profile.tradition){ c.setAttribute("aria-pressed","true"); $("#ob-trad-next").removeAttribute("disabled"); }
         });
       }
+      visits[todayKey] = true; save("bw_visits", visits);
       renderHome(); renderGate(); renderShort(); renderLessons(); renderPremium();
+      renderExtendedPlans(); renderCalendar(); renderCompanionNote();
       if (!profile.onboarded) openOnboarding();
     })();
     </script>
+
+    <!-- Stripe Premium integration (Payment Link + Billing Portal).
+         If this file is missing or fails to load, the Premium buttons
+         in the app script above fall back to recording interest on
+         this device only. See stripe-implementation/IMPLEMENTATION.md -->
+    <script src="stripe-implementation/premium.js"></script>
 
     <script>
       if ("serviceWorker" in navigator) {
